@@ -1,0 +1,123 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.625rem;
+  /* IshaLife-inspired color scheme */
+  --background: #FDF5E6; /* Warm off-white */
+  --foreground: #2C2C2C; /* Dark charcoal */
+  --card: #FFFFFF;
+  --card-foreground: #2C2C2C; /* Dark charcoal */
+  --popover: #FFFFFF;
+  --popover-foreground: #2C2C2C; /* Dark charcoal */
+  --primary: #FF8C42; /* Deep saffron/orange */
+  --primary-foreground: #FFFFFF;
+  --secondary: #FFB347; /* Warm gold */
+  --secondary-foreground: #2C2C2C; /* Dark charcoal */
+  --muted: #F7F3E9; /* Soft beige */
+  --muted-foreground: #654321; /* Warm brown */
+  --accent: #E2725B; /* Terracotta */
+  --accent-foreground: #FFFFFF;
+  --destructive: #8B0000; /* Deep burgundy */
+  --border: #E2725B; /* Terracotta */
+  --input: #F5F5DC; /* Cream */
+  --ring: #FF8C42; /* Deep saffron/orange */
+  --chart-1: #FF8C42; /* Deep saffron/orange */
+  --chart-2: #FF6B35; /* Deep saffron/orange variant */
+  --chart-3: #B87333; /* Rich copper */
+  --chart-4: #E2725B; /* Terracotta */
+  --chart-5: #355E3B; /* Forest green */
+  --sidebar: #FDF5E6; /* Warm off-white */
+  --sidebar-foreground: #2C2C2C; /* Dark charcoal */
+  --sidebar-primary: #FF8C42; /* Deep saffron/orange */
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #F7F3E9; /* Soft beige */
+  --sidebar-accent-foreground: #2C2C2C; /* Dark charcoal */
+  --sidebar-border: #E2725B; /* Terracotta */
+  --sidebar-ring: #FF8C42; /* Deep saffron/orange */
+}
+
+.dark {
+  --background: #1C1C1C; /* Very dark charcoal */
+  --foreground: #FDF5E6; /* Warm off-white */
+  --card: #2C2C2C; /* Dark charcoal */
+  --card-foreground: #FDF5E6; /* Warm off-white */
+  --popover: #2C2C2C; /* Dark charcoal */
+  --popover-foreground: #FDF5E6; /* Warm off-white */
+  --primary: #FF8C42; /* Deep saffron/orange */
+  --primary-foreground: #FFFFFF;
+  --secondary: #FFB347; /* Warm gold */
+  --secondary-foreground: #1C1C1C; /* Very dark charcoal */
+  --muted: #3C3C3C; /* Medium dark charcoal */
+  --muted-foreground: #F7F3E9; /* Soft beige */
+  --accent: #E2725B; /* Terracotta */
+  --accent-foreground: #FFFFFF;
+  --destructive: #FF6B35; /* Deep saffron/orange variant */
+  --border: #4C4C4C; /* Lighter charcoal */
+  --input: #3C3C3C; /* Medium dark charcoal */
+  --ring: #FF8C42; /* Deep saffron/orange */
+  --chart-1: #FF8C42; /* Deep saffron/orange */
+  --chart-2: #FFB347; /* Warm gold */
+  --chart-3: #E2725B; /* Terracotta */
+  --chart-4: #B87333; /* Rich copper */
+  --chart-5: #355E3B; /* Forest green */
+  --sidebar: #2C2C2C; /* Dark charcoal */
+  --sidebar-foreground: #FDF5E6; /* Warm off-white */
+  --sidebar-primary: #FF8C42; /* Deep saffron/orange */
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #3C3C3C; /* Medium dark charcoal */
+  --sidebar-accent-foreground: #FDF5E6; /* Warm off-white */
+  --sidebar-border: #4C4C4C; /* Lighter charcoal */
+  --sidebar-ring: #FF8C42; /* Deep saffron/orange */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
