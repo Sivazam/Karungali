@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { useAuth } from "@/hooks/use-auth";
 import { 
   User, 
   Package, 
@@ -61,9 +63,22 @@ const addresses = [
 ];
 
 export default function AccountPage() {
+  const { user, userProfile, isAuthenticated } = useAuth();
+  
+  // Use userProfile from Firestore if available, otherwise fall back to mock data
+  const displayUserData = userProfile ? {
+    ...userData,
+    fullName: userProfile.fullName || userData.fullName,
+    email: userProfile.email || userData.email,
+    phone: userProfile.phoneNumber || userData.phone,
+    joinDate: userProfile.createdAt?.toDate().toISOString().split('T')[0] || userData.joinDate,
+    totalOrders: userProfile.totalOrders || userData.totalOrders,
+    totalSpent: userProfile.totalSpent || userData.totalSpent,
+  } : userData;
+
   const [activeTab, setActiveTab] = useState("overview");
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUser, setEditedUser] = useState(userData);
+  const [editedUser, setEditedUser] = useState(displayUserData);
 
   const handleSaveProfile = () => {
     // In real app, this would save to backend
@@ -72,14 +87,15 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">My Account</h1>
-        <p className="text-muted-foreground">
-          Manage your profile, orders, and preferences
-        </p>
-      </div>
+    <ProtectedRoute>
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">My Account</h1>
+          <p className="text-muted-foreground">
+            Manage your profile, orders, and preferences
+          </p>
+        </div>
 
       <div className="grid lg:grid-cols-4 gap-8">
         {/* Sidebar Navigation */}
@@ -215,19 +231,19 @@ export default function AccountPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label className="text-muted-foreground">Full Name</Label>
-                        <div className="font-medium">{userData.fullName}</div>
+                        <div className="font-medium">{displayUserData.fullName}</div>
                       </div>
                       <div>
                         <Label className="text-muted-foreground">Email</Label>
-                        <div className="font-medium">{userData.email}</div>
+                        <div className="font-medium">{displayUserData.email}</div>
                       </div>
                       <div>
                         <Label className="text-muted-foreground">Phone</Label>
-                        <div className="font-medium">{userData.phone}</div>
+                        <div className="font-medium">{displayUserData.phone}</div>
                       </div>
                       <div>
                         <Label className="text-muted-foreground">Member Since</Label>
-                        <div className="font-medium">{new Date(userData.joinDate).toLocaleDateString()}</div>
+                        <div className="font-medium">{new Date(displayUserData.joinDate).toLocaleDateString()}</div>
                       </div>
                     </div>
                   )}
@@ -238,14 +254,14 @@ export default function AccountPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                   <CardContent className="p-6 text-center">
-                    <div className="text-3xl font-bold text-primary">{userData.totalOrders}</div>
+                    <div className="text-3xl font-bold text-primary">{displayUserData.totalOrders}</div>
                     <div className="text-sm text-muted-foreground">Total Orders</div>
                   </CardContent>
                 </Card>
                 
                 <Card>
                   <CardContent className="p-6 text-center">
-                    <div className="text-3xl font-bold text-green-600">₹{userData.totalSpent.toLocaleString()}</div>
+                    <div className="text-3xl font-bold text-green-600">₹{displayUserData.totalSpent.toLocaleString()}</div>
                     <div className="text-sm text-muted-foreground">Total Spent</div>
                   </CardContent>
                 </Card>
@@ -253,7 +269,7 @@ export default function AccountPage() {
                 <Card>
                   <CardContent className="p-6 text-center">
                     <div className="text-3xl font-bold text-blue-600">
-                      {Math.floor((Date.now() - new Date(userData.joinDate).getTime()) / (1000 * 60 * 60 * 24))}
+                      {Math.floor((Date.now() - new Date(displayUserData.joinDate).getTime()) / (1000 * 60 * 60 * 24))}
                     </div>
                     <div className="text-sm text-muted-foreground">Days Member</div>
                   </CardContent>
@@ -485,6 +501,7 @@ export default function AccountPage() {
           )}
         </div>
       </div>
-    </div>
+      </div>
+    </ProtectedRoute>
   );
 }

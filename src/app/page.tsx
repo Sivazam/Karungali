@@ -12,7 +12,9 @@ import {
   Sparkles,
   Shield,
   Truck,
-  Award
+  Award,
+  Minus,
+  Plus
 } from "lucide-react";
 import { useCartStore } from "@/store/cart-store";
 import { HeroCarousel } from "@/components/ui/carousel/hero-carousel";
@@ -114,18 +116,25 @@ const categories = [
 
 export default function Home() {
   const addItem = useCartStore((state) => state.addItem);
+  const items = useCartStore((state) => state.items);
+  const updateQuantity = useCartStore((state) => state.updateQuantity);
 
   const handleAddToCart = (product: any) => {
-    addItem({
-      productId: product.id,
-      name: product.name,
-      price: product.price,
-      originalPrice: product.originalPrice,
-      image: product.image,
-      quantity: 1,
-      category: product.category,
-      gstRate: product.gstRate
-    });
+    const cartItem = items.find(item => item.productId === product.id);
+    if (cartItem) {
+      updateQuantity(cartItem.id, cartItem.quantity + 1);
+    } else {
+      addItem({
+        productId: product.id,
+        name: product.name,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        image: product.image,
+        quantity: 1,
+        category: product.category,
+        gstRate: product.gstRate
+      });
+    }
   };
 
   return (
@@ -240,66 +249,102 @@ export default function Home() {
           </div>
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
-                <div className="relative">
-                  <div className="aspect-square bg-muted flex items-center justify-center">
-                    <div className="text-6xl">📿</div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 bg-background/80 hover:bg-background"
-                  >
-                    <Heart className="h-4 w-4" />
-                  </Button>
-                  {product.originalPrice && (
-                    <Badge className="absolute top-2 left-2 bg-destructive">
-                      {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
-                    </Badge>
-                  )}
-                </div>
-                <CardContent className="p-4 space-y-3">
-                  <div>
-                    <h3 className="font-semibold text-sm line-clamp-2 mb-1">
-                      {product.name}
-                    </h3>
-                    <p className="text-xs text-muted-foreground">{product.category}</p>
-                  </div>
-                  
-                  <div className="flex items-center gap-1">
-                    <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                    <span className="text-xs font-medium">{product.rating}</span>
-                    <span className="text-xs text-muted-foreground">({product.reviews})</span>
-                  </div>
-                  
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-lg">₹{product.price}</span>
-                      {product.originalPrice && (
-                        <span className="text-sm text-muted-foreground line-through">
-                          ₹{product.originalPrice}
-                        </span>
-                      )}
+            {featuredProducts.map((product) => {
+              const cartItem = items.find(item => item.productId === product.id);
+              const currentCartQuantity = cartItem ? cartItem.quantity : 0;
+              
+              return (
+                <Card key={product.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+                  <div className="relative">
+                    <div className="aspect-square bg-muted flex items-center justify-center">
+                      <div className="text-6xl">📿</div>
                     </div>
-                  </div>
-                  
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      className="flex-1 bg-primary hover:bg-primary/90"
-                      onClick={() => handleAddToCart(product)}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 bg-background/80 hover:bg-background"
                     >
-                      <ShoppingCart className="h-3 w-3 mr-1" />
-                      Add
+                      <Heart className="h-4 w-4" />
                     </Button>
-                    <Button size="sm" variant="outline" asChild>
-                      <Link href={`/product/${product.id}`}>View</Link>
-                    </Button>
+                    {product.originalPrice && (
+                      <Badge className="absolute top-2 left-2 bg-destructive">
+                        {Math.round((1 - product.price / product.originalPrice) * 100)}% OFF
+                      </Badge>
+                    )}
                   </div>
-                </CardContent>
-              </Card>
-            ))}
+                  <CardContent className="p-4 space-y-3">
+                    <div>
+                      <h3 className="font-semibold text-sm line-clamp-2 mb-1">
+                        {product.name}
+                      </h3>
+                      <p className="text-xs text-muted-foreground">{product.category}</p>
+                    </div>
+                    
+                    <div className="flex items-center gap-1">
+                      <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                      <span className="text-xs font-medium">{product.rating}</span>
+                      <span className="text-xs text-muted-foreground">({product.reviews})</span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-lg">₹{product.price}</span>
+                        {product.originalPrice && (
+                          <span className="text-sm text-muted-foreground line-through">
+                            ₹{product.originalPrice}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      {currentCartQuantity > 0 ? (
+                        <div className="flex items-center gap-1 flex-1">
+                          <Button 
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              if (currentCartQuantity === 1) {
+                                // Remove from cart when quantity is 1 and decrement is clicked
+                                updateQuantity(cartItem!.id, 0);
+                              } else {
+                                updateQuantity(cartItem!.id, currentCartQuantity - 1);
+                              }
+                            }}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Minus className="h-3 w-3" />
+                          </Button>
+                          <span className="text-xs font-medium min-w-[20px] text-center">
+                            {currentCartQuantity}
+                          </span>
+                          <Button 
+                            size="sm"
+                            variant="outline"
+                            onClick={() => updateQuantity(cartItem!.id, Math.min(99, currentCartQuantity + 1))}
+                            className="h-8 w-8 p-0"
+                          >
+                            <Plus className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button 
+                          size="sm" 
+                          className="flex-1 bg-primary hover:bg-primary/90"
+                          onClick={() => handleAddToCart(product)}
+                        >
+                          <ShoppingCart className="h-3 w-3 mr-1" />
+                          Add
+                        </Button>
+                      )}
+                      <Button size="sm" variant="outline" asChild>
+                        <Link href={`/product/${product.id}`}>View</Link>
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </div>
           
           <div className="text-center mt-8">

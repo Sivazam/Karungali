@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { 
   Home, 
   Grid3X3, 
-  Search, 
   ShoppingCart, 
   User 
 } from "lucide-react";
@@ -16,7 +15,6 @@ import { useCartStore } from "@/store/cart-store";
 const navigation = [
   { name: "Home", href: "/", icon: Home },
   { name: "Categories", href: "/categories", icon: Grid3X3 },
-  { name: "Search", href: "/search", icon: Search },
   { name: "Cart", href: "/cart", icon: ShoppingCart },
   { name: "Account", href: "/account", icon: User },
 ];
